@@ -27,3 +27,17 @@ Config:
 
 - JDBC URL, user, pass hardcoded in constructor.
 - Default bank ID = 1; valid types = A, B, AB, O.
+
+---
+
+[Donor.java](Donor.java)
+
+Represents a blood donor with simple console interactions.
+
+- **Extends**: `User` (holds `name` and `bloodType`).
+- **donateBlood(db, qty)**: Updates inventory via `db.insertDonation`, then prints a thank-you or failure message.
+- **showMenu(db)**: Displays a two-option menu:
+  1. **Donate Blood** — prompts quantity and calls `donateBlood`.
+  2. **Request Blood** — prompts quantity and calls `db.processBloodRequest`, then prints confirmation on approval.
+
+- **Note**: Uses a shared `Scanner` without closing `System.in` to allow continuous input.
