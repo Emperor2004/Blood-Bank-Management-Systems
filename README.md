@@ -39,5 +39,16 @@ Represents a blood donor with simple console interactions.
 - **showMenu(db)**: Displays a two-option menu:
   1. **Donate Blood** — prompts quantity and calls `donateBlood`.
   2. **Request Blood** — prompts quantity and calls `db.processBloodRequest`, then prints confirmation on approval.
-
 - **Note**: Uses a shared `Scanner` without closing `System.in` to allow continuous input.
+
+---
+
+[Recipient.java](Recipient.java)
+
+Represents a blood recipient with console-based request functionality.
+
+- **Extends**: `User` (stores `name` and `bloodType`).
+- **requestBlood(db, qty)**: Calls `db.processBloodRequest`; prints confirmation if approved.
+- **showMenu(db)**: Displays a single-option menu:
+  1. **Request Blood** — prompts quantity and invokes `requestBlood`.
+- **Note**: Uses a shared `Scanner` without closing `System.in` for continuous input.
