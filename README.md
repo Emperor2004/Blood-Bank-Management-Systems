@@ -184,7 +184,7 @@ A console‐based interface for staff to authenticate and manage blood inventory
 
 ---
 
-### [BloodBankApp.java](BloodBankApp.java)
+### [Blood Bank App](BloodBankApp.java)
 
 Entry point for the console‐based Blood Bank Management System, coordinating donor/recipient and staff workflows.
 
