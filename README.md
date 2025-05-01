@@ -15,25 +15,37 @@ The `bloodbank` database models a simple network of blood banks, donors, recipie
 
 ### [DatabaseManager.java](DatabaseManager.java)
 
-Manages MySQL interactions for the `bloodbank` schema, including stock queries and updates with validation.
+Provides JDBC-based access to the `bloodbank` MySQL schema, with built-in validation and error handling.
 
-- **Constructor**  
-  Initializes JDBC connection to `jdbc:mysql://localhost:3306/bloodbank` using user and password.
+- **Purpose**  
+  Manages database connection and implements methods to query and update blood inventory, plus staff authentication.
 
-- **isValidBloodType(type)**  
-  Private helper to check against `VALID_BLOOD_TYPES = {"A","B","AB","O"}`.
+- **Connection Setup**  
+  - Loads MySQL driver and connects to `jdbc:mysql://localhost:3306/bloodbank`  
+  - Input Credentials
+  - Logs success or prints connection errors
+
+- **Blood-Type Validation**  
+  Uses `VALID_BLOOD_TYPES = {"A","B","AB","O"}` to guard against invalid inputs.
 
 - **getBloodQuantity(bankID, bloodType)**  
-  - Throws `InvalidBloodTypeException` if type invalid.  
-  - Returns current stock (0 if no record).
+  - Throws `InvalidBloodTypeException` for unrecognized types  
+  - Throws `NullPointerException` if the connection is missing  
+  - Queries current stock, logs SQL errors, and returns quantity (0 if none)
 
 - **updateBloodQuantity(bankID, bloodType, newQty)**  
-  - Throws `InvalidBloodTypeException` if type invalid.  
-  - Throws `InvalidStaffOperationException` if `newQty < 0`.  
-  - Updates inventory and returns `true` on success.
+  - Validates blood type and non-negative quantity (throws exceptions otherwise)  
+  - Executes an update inside a try-with-resources block  
+  - Returns `true` if the update succeeds; logs and returns `false` on SQL errors
 
 - **validateStaff(staffID, password)**  
-  Calls `db.validateStaff` query and returns `true` if credentials match.
+  - Verifies credentials via a SELECT query in a try-with-resources block  
+  - Returns `true` on match; logs and returns `false` on SQL errors
+
+- **Error Handling & Resource Management**  
+  - Catches and logs `SQLException` or driver errors  
+  - Uses try-with-resources to ensure `PreparedStatement` and `ResultSet` are closed  
+  - Propagates custom exceptions for invalid operations  
 
 ---
 
