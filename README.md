@@ -83,11 +83,22 @@ Handles staff authentication and inventory management via a console menu.
 
 ---
 
-## ➡ _Exceptions_:-
+## ➡ _Custom Exceptions_:-
 
 ### [InsufficientBloodStockException.java](InsufficientBloodStockException.java)
 
 A custom checked exception thrown when trying to process a blood operation but the available stock is insufficient.
 
-- Extends: `Exception`
-- Constructor: Takes a `String message` describing the shortage.
+- **Extends**: `Exception`
+- **Constructor**: Takes a `String message` describing the shortage.
+
+---
+
+### [InvalidBloodTypeException.java](InvalidBloodTypeException.java)
+
+A custom checked exception thrown when an operation receives an unrecognized blood type.
+
+- **Extends**: `Exception`
+- **Constructor**: Accepts a `String message` explaining the invalid type.
+
+---
