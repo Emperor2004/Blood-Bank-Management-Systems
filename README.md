@@ -1,6 +1,23 @@
-# Blood-Bank-Management-Systems
+# Blood Bank Management Systems
 
-## 🗃️File Descriptions
+***A simple Java console application to manage multiple blood banks’ inventory, donors, recipients, and staff workflows using a MySQL backend.***
+
+## 📂 Project Structure
+```
+.
+├── bloodbank.sql
+├── DatabaseManager.java
+├── User.java
+├── Donor.java
+├── Recipient.java
+├── Staff.java
+├── BloodBankApp.java
+├── InsufficientBloodStockException.java
+├── InvalidBloodTypeException.java
+└── InvalidStaffOperationException.java
+```
+
+## 🗃 File Descriptions
 
 ### [bloodbank.sql](bloodbank.sql)
 
@@ -232,3 +249,11 @@ A custom checked exception thrown when a staff-triggered operation is not permit
 
 - **Extends**: `Exception`
 - **Constructor**: Accepts a `String message` detailing the invalid operation.
+
+---
+
+## 🟠 Contributors
+- Nimit Prakash
+- Om Narayan Pandit
+- Vedant Shitole
+- Vraj Patel
