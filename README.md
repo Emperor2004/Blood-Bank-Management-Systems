@@ -167,6 +167,17 @@ A console‐based interface for staff to authenticate and manage blood inventory
 
 ---
 
+### [BloodBankApp.java](BloodBankApp.java)
+
+**Console-based Java app** for managing blood donations and requests with donor, recipient, and staff workflows.
+
+Features
+- **Donor/Recipient**: Register, donate, request, check status
+- **Staff**: Secure login, inventory control, approve requests
+- **Database**: CRUD operations via `DatabaseManager`
+
+---
+
 ## ➡ _Custom Exceptions_:-
 
 ### [InsufficientBloodStockException.java](InsufficientBloodStockException.java)
