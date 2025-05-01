@@ -102,3 +102,10 @@ A custom checked exception thrown when an operation receives an unrecognized blo
 - **Constructor**: Accepts a `String message` explaining the invalid type.
 
 ---
+
+### [InvalidStaffOperationException.java](InvalidStaffOperationException.java)
+
+A custom checked exception thrown when a staff-triggered operation is not permitted or fails validation.
+
+- **Extends**: `Exception`
+- **Constructor**: Accepts a `String message` detailing the invalid operation.
