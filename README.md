@@ -64,33 +64,37 @@ Base for all users (Donor/Recipient), enforcing a common interface.
 
 ### [Donor.java](Donor.java)
 
-Provides a console‐based interface for donors to record blood donations.
+Provides a console‐based interface for donors to record blood donations with input validation and error handling.
 
 - **Purpose**  
-  Guides donors through the donation process and updates inventory.
+  Guides a donor through entering a valid donation quantity, updates inventory, and acknowledges the contribution.
+
+- **Fields**  
+  - `name`: Donor’s name  
+  - `bloodType`: Donor’s blood group
 
 - **Donation Workflow**  
-  - Prompts donor for quantity to donate  
+  - Prompts for donation quantity  
+  - Validates positive integer input (reports invalid entries)  
   - Retrieves current stock via `DatabaseManager.getBloodQuantity`  
-  - Updates total using `DatabaseManager.updateBloodQuantity`  
-  - Confirms success with new stock level and a thank‐you message  
-  - Reports errors if the update fails
+  - Updates stock with `DatabaseManager.updateBloodQuantity`  
+  - Confirms new total and thanks the donor  
+  - Handles:
+    - Non-numeric input (`InputMismatchException`)  
+    - Non-positive quantity (`IllegalArgumentException`)  
+    - Invalid blood type or update errors (`InvalidBloodTypeException`, `InvalidStaffOperationException`)
 
 - **Main Menu**  
-  1. **Donate Blood**  
-     - Calls the donation workflow  
-  2. **Exit**  
-     - Displays a farewell message and ends the loop  
-     - Invalid selections prompt a retry message
+  - **Donate Blood**: launches the donation workflow  
+  - **Exit**: thanks the donor and ends the loop  
+  - Invalid menu selections and input mismatches prompt retry messages
 
-- **Error Handling**  
-  Catches and displays messages for:  
-  - `InvalidBloodTypeException`  
-  - `InvalidStaffOperationException`
+- **Accessors**  
+  - `getName` / `setName`  
+  - `getBloodType` / `setBloodType`
 
 - **Input Management**  
-  Uses a shared `Scanner` passed from the caller without closing `System.in` to maintain continuous input.  
-
+  Uses a shared `Scanner` without closing `System.in` to support continuous input and recovery from invalid entries.  
 
 ---
 
@@ -157,13 +161,6 @@ Implements a text‐based menu for staff to authenticate and manage blood bank i
 
 - **Input Management**  
   Uses a single `Scanner` instance without closing `System.in` to support continuous user interaction.  
-
-
-
-
-
-
-
 
 
 ---
