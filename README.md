@@ -52,3 +52,18 @@ Represents a blood recipient with console-based request functionality.
 - **showMenu(db)**: Displays a single-option menu:
   1. **Request Blood** — prompts quantity and invokes `requestBlood`.
 - **Note**: Uses a shared `Scanner` without closing `System.in` for continuous input.
+
+---
+
+[Staff.java](Staff.java)
+
+Handles staff authentication and inventory management via a console menu.
+
+- **Fields**: `staffID`, `password`.
+- **login(db)**: Returns `db.validateStaff(staffID, password)`.
+- **showMenu(db)**: Loops until logout offering:
+  1. **Check Inventory** — prompts blood type, displays `db.getBloodQuantity(1, type)`.
+  2. **Update Inventory** — prompts blood type & quantity, calls `db.updateBloodQuantity(1, type, qty)`, confirms outcome.
+  3. **Logout** — exits menu.
+
+- Note: Uses `Scanner` without closing `System.in`.
