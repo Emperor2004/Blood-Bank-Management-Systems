@@ -100,3 +100,5 @@ A custom checked exception thrown when an operation receives an unrecognized blo
 
 - **Extends**: `Exception`
 - **Constructor**: Accepts a `String message` explaining the invalid type.
+
+---
