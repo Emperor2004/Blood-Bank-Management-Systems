@@ -19,7 +19,7 @@
 
 ## 🗃 File Descriptions
 
-### [bloodbank.sql](bloodbank.sql)
+### [Blood Bank Database](bloodbank.sql)
 
 The `bloodbank` database models a simple network of blood banks, donors, recipients, inventory, donation events, transfer logs and staff. It supports:
 
