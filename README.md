@@ -1,4 +1,4 @@
-# Blood Bank Management Systems
+# ***Blood Bank Management System***
 
 ***A simple Java console application to manage multiple blood banks’ inventory, donors, recipients, and staff workflows using a MySQL backend.***
 
