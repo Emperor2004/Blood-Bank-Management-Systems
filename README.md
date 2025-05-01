@@ -15,18 +15,25 @@ The `bloodbank` database models a simple network of blood banks, donors, recipie
 
 ### [DatabaseManager.java](DatabaseManager.java)
 
-A Java helper for managing the `bloodbank` MySQL database. Handles connection setup and provides methods to:
+Manages MySQL interactions for the `bloodbank` schema, including stock queries and updates with validation.
 
-- `getBloodQuantity(bankID, bloodType)`: Returns stock (0 if invalid).
-- `updateBloodQuantity(bankID, bloodType, newQty)`: Updates inventory.
-- `insertDonation(donorName, bloodType, quantity)`: Updates stock, ensures donor exists, logs donation.
-- `processBloodRequest(recipientName, bloodType, qty)`: Checks stock, deducts, creates approved request.
-- `validateStaff(staffID, password)`: Verifies credentials.
+- **Constructor**  
+  Initializes JDBC connection to `jdbc:mysql://localhost:3306/bloodbank` using user and password.
 
-Config:
+- **isValidBloodType(type)**  
+  Private helper to check against `VALID_BLOOD_TYPES = {"A","B","AB","O"}`.
 
-- JDBC URL, user, pass hardcoded in constructor.
-- Default bank ID = 1; valid types = A, B, AB, O.
+- **getBloodQuantity(bankID, bloodType)**  
+  - Throws `InvalidBloodTypeException` if type invalid.  
+  - Returns current stock (0 if no record).
+
+- **updateBloodQuantity(bankID, bloodType, newQty)**  
+  - Throws `InvalidBloodTypeException` if type invalid.  
+  - Throws `InvalidStaffOperationException` if `newQty < 0`.  
+  - Updates inventory and returns `true` on success.
+
+- **validateStaff(staffID, password)**  
+  Calls `db.validateStaff` query and returns `true` if credentials match.
 
 ---
 
