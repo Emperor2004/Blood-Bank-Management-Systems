@@ -84,13 +84,33 @@ Provides a console‐based interface for donors to record blood donations.
 
 ### [Recipient.java](Recipient.java)
 
-Represents a blood recipient with console-based request functionality.
+Provides a console‐based interface for recipients to request blood units.
 
-- **Extends**: `User` (stores `name` and `bloodType`).
-- **requestBlood(db, qty)**: Calls `db.processBloodRequest`; prints confirmation if approved.
-- **showMenu(db)**: Displays a single-option menu:
-  1. **Request Blood** — prompts quantity and invokes `requestBlood`.
-- **Note**: Uses a shared `Scanner` without closing `System.in` for continuous input.
+- **Purpose**  
+  Guides recipients through checking availability and placing blood requests.
+
+- **Request Workflow**  
+  - Prompts recipient for quantity needed  
+  - Retrieves current stock via `DatabaseManager.getBloodQuantity`  
+  - Alerts if insufficient units available  
+  - Deducts requested units using `DatabaseManager.updateBloodQuantity`  
+  - Confirms success with remaining stock and readiness message  
+  - Reports errors if the update fails
+
+- **Main Menu**  
+  1. **Request Blood**  
+     - Initiates the request workflow  
+  2. **Exit**  
+     - Displays a farewell message and ends the loop  
+  - Invalid selections prompt a retry message
+
+- **Error Handling**  
+  Catches and displays messages for:  
+  - `InvalidBloodTypeException`  
+  - `InvalidStaffOperationException`
+
+- **Input Management**  
+  Uses a shared `Scanner` passed from the caller without closing `System.in` to maintain continuous input.  
 
 ---
 
