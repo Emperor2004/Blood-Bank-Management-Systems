@@ -150,7 +150,7 @@ Provides a console‐based interface for recipients to request blood with valida
 
 ---
 
-### [Staff.java](Staff.java)
+### [Staff Class](Staff.java)
 
 A console‐based interface for staff to authenticate and manage blood inventory with robust input validation.
 
