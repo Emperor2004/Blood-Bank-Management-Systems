@@ -80,3 +80,14 @@ Handles staff authentication and inventory management via a console menu.
   3. **Logout** — exits menu.
 
 - Note: Uses `Scanner` without closing `System.in`.
+
+---
+
+## ➡ _Exceptions_:-
+
+### [InsufficientBloodStockException.java](InsufficientBloodStockException.java)
+
+A custom checked exception thrown when trying to process a blood operation but the available stock is insufficient.
+
+- Extends: `Exception`
+- Constructor: Takes a `String message` describing the shortage.
