@@ -77,16 +77,43 @@ Represents a blood recipient with console-based request functionality.
 
 ### [Staff.java](Staff.java)
 
-Handles staff authentication and inventory management via a console menu.
 
-- **Fields**: `staffID`, `password`.
-- **login(db)**: Returns `db.validateStaff(staffID, password)`.
-- **showMenu(db)**: Loops until logout offering:
-  1. **Check Inventory** — prompts blood type, displays `db.getBloodQuantity(1, type)`.
-  2. **Update Inventory** — prompts blood type & quantity, calls `db.updateBloodQuantity(1, type, qty)`, confirms outcome.
-  3. **Logout** — exits menu.
+Implements a text‐based menu for staff to authenticate and manage blood bank inventory.
 
-- Note: Uses `Scanner` without closing `System.in`.
+- **Purpose**  
+  Enables staff users to securely log in, check current blood stock levels, update inventory quantities, and log out.
+
+- **Authentication**  
+  - Uses `staffID` and `password`  
+  - Verifies credentials via `DatabaseManager.validateStaff`
+
+- **Main Menu**  
+  1. **Check Inventory**  
+     - Prompts for blood type  
+     - Retrieves and displays available units  
+     - Handles invalid blood‐type errors  
+  2. **Update Inventory**  
+     - Prompts for blood type and new quantity  
+     - Updates database stock  
+     - Prevents negative quantities and reports errors  
+  3. **Logout**  
+     - Exits the menu loop
+
+- **Error Handling**  
+  Catches and displays messages for:
+  - `InvalidBloodTypeException`  
+  - `InvalidStaffOperationException`
+
+- **Input Management**  
+  Uses a single `Scanner` instance without closing `System.in` to support continuous user interaction.  
+
+
+
+
+
+
+
+
 
 ---
 
