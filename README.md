@@ -115,7 +115,7 @@ Provides a console‐based interface for donors to record blood donations with i
 
 ---
 
-### [Recipient.java](Recipient.java)
+### [Recipient Class](Recipient.java)
 
 Provides a console‐based interface for recipients to request blood with validation and error handling.
 
