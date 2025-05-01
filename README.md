@@ -100,33 +100,36 @@ Provides a console‐based interface for donors to record blood donations with i
 
 ### [Recipient.java](Recipient.java)
 
-Provides a console‐based interface for recipients to request blood units.
+Provides a console‐based interface for recipients to request blood with validation and error handling.
 
 - **Purpose**  
-  Guides recipients through checking availability and placing blood requests.
+  Guides a recipient through entering a valid request quantity, checks stock, updates inventory, and confirms readiness.
 
 - **Request Workflow**  
-  - Prompts recipient for quantity needed  
+  - Prompts for quantity to request  
+  - Validates positive integer input (reports non-numeric or non-positive entries)  
   - Retrieves current stock via `DatabaseManager.getBloodQuantity`  
   - Alerts if insufficient units available  
-  - Deducts requested units using `DatabaseManager.updateBloodQuantity`  
-  - Confirms success with remaining stock and readiness message  
-  - Reports errors if the update fails
+  - Deducts approved units using `DatabaseManager.updateBloodQuantity`  
+  - Confirms remaining stock and readiness message
 
 - **Main Menu**  
-  1. **Request Blood**  
-     - Initiates the request workflow  
-  2. **Exit**  
-     - Displays a farewell message and ends the loop  
-  - Invalid selections prompt a retry message
+  - **Request Blood**: launches the request workflow  
+  - **Exit**: thanks the recipient and exits the loop  
+  - Invalid menu selections and input mismatches prompt retry messages
 
 - **Error Handling**  
   Catches and displays messages for:  
-  - `InvalidBloodTypeException`  
-  - `InvalidStaffOperationException`
+  - `InputMismatchException` (non-numeric input)  
+  - `IllegalArgumentException` (non-positive quantity)  
+  - `InvalidBloodTypeException` & `InvalidStaffOperationException` (unexpected errors)
+
+- **Accessors**  
+  - `getName` / `setName`  
+  - `getBloodType` / `setBloodType`
 
 - **Input Management**  
-  Uses a shared `Scanner` passed from the caller without closing `System.in` to maintain continuous input.  
+  Uses a shared `Scanner` passed from the caller without closing `System.in` to allow continuous interaction and recovery from invalid input.  
 
 ---
 
