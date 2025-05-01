@@ -1,6 +1,23 @@
-# Blood-Bank-Management-Systems
+# Blood Bank Management Systems
 
-## 🗃️File Descriptions
+***A simple Java console application to manage multiple blood banks’ inventory, donors, recipients, and staff workflows using a MySQL backend.***
+
+## 📂 Project Structure
+```
+.
+├── bloodbank.sql
+├── DatabaseManager.java
+├── User.java
+├── Donor.java
+├── Recipient.java
+├── Staff.java
+├── BloodBankApp.java
+├── InsufficientBloodStockException.java
+├── InvalidBloodTypeException.java
+└── InvalidStaffOperationException.java
+```
+
+## 🗃 File Descriptions
 
 ### [bloodbank.sql](bloodbank.sql)
 
@@ -169,12 +186,40 @@ A console‐based interface for staff to authenticate and manage blood inventory
 
 ### [BloodBankApp.java](BloodBankApp.java)
 
-**Console-based Java app** for managing blood donations and requests with donor, recipient, and staff workflows.
+Entry point for the console‐based Blood Bank Management System, coordinating donor/recipient and staff workflows.
 
-Features
-- **Donor/Recipient**: Register, donate, request, check status
-- **Staff**: Secure login, inventory control, approve requests
-- **Database**: CRUD operations via `DatabaseManager`
+- **Purpose**  
+  Presents the main menu and routes users to donor/recipient or staff interfaces, handling overall application flow.
+
+- **Main Menu**  
+  1. **Donor/Recipient**  
+     - Prompts for name and blood type  
+     - Lets user choose role (Donor or Recipient)  
+     - Instantiates the appropriate class and invokes its menu  
+  2. **Staff Login**  
+     - Prompts for staff ID and password  
+     - Authenticates via `Staff.login`  
+     - On success, enters the staff menu  
+     - On failure, reports invalid credentials  
+  3. **Exit**  
+     - Gracefully terminates the application
+
+- **User Flow**  
+  - Continually loops until “Exit” is selected  
+  - Delegates to `Donor`, `Recipient`, or `Staff` classes for role‐specific operations  
+
+- **Error Handling**  
+  - Catches non‐numeric menu entries (`NumberFormatException`)  
+  - Handles unexpected input end (`NoSuchElementException`)  
+  - Reports any other exceptions with their messages  
+
+- **Input Management**  
+  - Uses a single `Scanner` and trims empty lines  
+  - Validates and parses string input to integers safely  
+  - Closes the `Scanner` on application exit  
+
+- **Integration**  
+  Relies on `DatabaseManager` for persistence and the `Donor`, `Recipient`, and `Staff` classes for domain logic.  
 
 ---
 
@@ -204,3 +249,11 @@ A custom checked exception thrown when a staff-triggered operation is not permit
 
 - **Extends**: `Exception`
 - **Constructor**: Accepts a `String message` detailing the invalid operation.
+
+---
+
+## 🟠 Contributors
+- Nimit Prakash
+- Om Narayan Pandit
+- Vedant Shitole
+- Vraj Patel
