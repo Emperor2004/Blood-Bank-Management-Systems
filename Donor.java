@@ -41,6 +41,7 @@ public class Donor {
     }
 
     public void showMenu(DatabaseManager db, Scanner sc) {
+        OUTER:
         while (true) {
             try {
                 System.out.println("\n--- Donor Menu ---");
@@ -56,7 +57,7 @@ public class Donor {
                         break;
                     case 2:
                         System.out.println("Thank you for your contribution, " + name + "!");
-                        break;
+                        break OUTER;
                     default:
                         System.out.println("Invalid choice. Please select again.");
                         break;
@@ -82,41 +83,5 @@ public class Donor {
 
     public void setBloodType(String bloodType) {
         this.bloodType = bloodType;
-
-            int currentQty = db.getBloodQuantity(1, bloodType);
-            boolean updated = db.updateBloodQuantity(1, bloodType, currentQty + quantity);
-
-            if (updated) {
-                System.out.println("Donation successful. New quantity for " + bloodType + " at bank 1: " + (currentQty + quantity));
-                System.out.println("Thank you " + name + " for donating " + quantity + " unit(s) of " + bloodType + " blood.");
-            } else {
-                System.out.println("Error updating blood stock. Please try again later.");
-            }
-
-        } catch (InvalidBloodTypeException | InvalidStaffOperationException e) {
-            System.out.println("Unexpected error: " + e.getMessage());
-        }
-    }
-
-    public void showMenu(DatabaseManager db, Scanner sc) {
-        while (true) {
-
-            System.out.println("\n--- Donor Menu ---");
-            System.out.println("1. Donate Blood");
-            System.out.println("2. Exit");
-            System.out.print("Enter your choice: ");
-            int choice = sc.nextInt();
-            sc.nextLine();
-            switch (choice) {
-                case 1:
-                    donateBlood(db, sc);
-                    break;
-                case 2:
-                    System.out.println("Thank you for your contribution, " + name + "!");
-                default:
-                    System.out.println("Invalid choice. Please select again.");
-                    break;
-            }
-        }
     }
 }
