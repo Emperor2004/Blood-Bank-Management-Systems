@@ -79,7 +79,7 @@ Base for all users (Donor/Recipient), enforcing a common interface.
 
 ---
 
-### [Donor.java](Donor.java)
+### [Donor Class](Donor.java)
 
 Provides a console‐based interface for donors to record blood donations with input validation and error handling.
 
