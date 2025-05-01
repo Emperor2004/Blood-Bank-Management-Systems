@@ -1,49 +1,86 @@
-// Donor.java
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Donor extends User {
+public class Donor {
+    private String name;
+    private String bloodType;
 
     public Donor(String name, String bloodType) {
-        super(name, bloodType);
+        this.name = name;
+        this.bloodType = bloodType;
     }
 
-    public void donateBlood(DatabaseManager db, int quantity) {
-        boolean success = db.insertDonation(name, bloodType, quantity);
-        if (success) {
-            System.out.println("Thank you " + name + " for donating " + quantity +
-                               " unit(s) of " + bloodType + " blood.");
-        } else {
-            System.out.println("Donation failed. Please try again.");
-        }
-    }
-
-    @Override
-    public void showMenu(DatabaseManager db) {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("\n--- Donor Menu ---");
-        System.out.println("1. Donate Blood");
-        System.out.println("2. Request Blood");
-        System.out.print("Enter your choice: ");
-
-        int choice = sc.nextInt();
-        if (choice == 1) {
+    public void donateBlood(DatabaseManager db, Scanner sc) {
+        try {
             System.out.print("Enter quantity to donate: ");
             int quantity = sc.nextInt();
-            donateBlood(db, quantity);
+            sc.nextLine(); // Clear buffer
 
-        } else if (choice == 2) {
-            System.out.print("Enter quantity to request: ");
-            int quantity = sc.nextInt();
-            boolean available = db.processBloodRequest(name, bloodType, quantity);
-            if (available) {
-                System.out.println("Your request for " + quantity +
-                                   " unit(s) of " + bloodType + " blood has been processed.");
+            if (quantity <= 0) {
+                throw new IllegalArgumentException("Donation quantity must be positive.");
             }
 
-        } else {
-            System.out.println("Invalid choice.");
+            int currentQty = db.getBloodQuantity(1, bloodType);
+            boolean updated = db.updateBloodQuantity(1, bloodType, currentQty + quantity);
+
+            if (updated) {
+                System.out.println("Donation successful. New quantity for " + bloodType + " at bank 1: " + (currentQty + quantity));
+                System.out.println("Thank you " + name + " for donating " + quantity + " unit(s) of " + bloodType + " blood.");
+            } else {
+                System.out.println("Error updating blood stock. Please try again later.");
+            }
+
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input! Please enter a valid number.");
+            sc.nextLine(); // Clear invalid input
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e.getMessage());
+        } catch (InvalidBloodTypeException | InvalidStaffOperationException e) {
+            System.out.println("Unexpected error: " + e.getMessage());
         }
-        // note: not closing sc here so System.in remains open for main
+    }
+
+    public void showMenu(DatabaseManager db, Scanner sc) {
+        while (true) {
+            try {
+                System.out.println("\n--- Donor Menu ---");
+                System.out.println("1. Donate Blood");
+                System.out.println("2. Exit");
+                System.out.print("Enter your choice: ");
+                int choice = sc.nextInt();
+                sc.nextLine();
+
+                switch (choice) {
+                    case 1:
+                        donateBlood(db, sc);
+                        break;
+                    case 2:
+                        System.out.println("Thank you for your contribution, " + name + "!");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please select again.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input! Please enter a valid number.");
+                sc.nextLine(); // clear invalid input
+            }
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
+    public void setBloodType(String bloodType) {
+        this.bloodType = bloodType;
     }
 }
-
