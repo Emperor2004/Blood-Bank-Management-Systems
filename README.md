@@ -52,14 +52,33 @@ Base for all users (Donor/Recipient), enforcing a common interface.
 
 ### [Donor.java](Donor.java)
 
-Represents a blood donor with simple console interactions.
+Provides a console‐based interface for donors to record blood donations.
 
-- **Extends**: `User` (holds `name` and `bloodType`).
-- **donateBlood(db, qty)**: Updates inventory via `db.insertDonation`, then prints a thank-you or failure message.
-- **showMenu(db)**: Displays a two-option menu:
-  1. **Donate Blood** — prompts quantity and calls `donateBlood`.
-  2. **Request Blood** — prompts quantity and calls `db.processBloodRequest`, then prints confirmation on approval.
-- **Note**: Uses a shared `Scanner` without closing `System.in` to allow continuous input.
+- **Purpose**  
+  Guides donors through the donation process and updates inventory.
+
+- **Donation Workflow**  
+  - Prompts donor for quantity to donate  
+  - Retrieves current stock via `DatabaseManager.getBloodQuantity`  
+  - Updates total using `DatabaseManager.updateBloodQuantity`  
+  - Confirms success with new stock level and a thank‐you message  
+  - Reports errors if the update fails
+
+- **Main Menu**  
+  1. **Donate Blood**  
+     - Calls the donation workflow  
+  2. **Exit**  
+     - Displays a farewell message and ends the loop  
+     - Invalid selections prompt a retry message
+
+- **Error Handling**  
+  Catches and displays messages for:  
+  - `InvalidBloodTypeException`  
+  - `InvalidStaffOperationException`
+
+- **Input Management**  
+  Uses a shared `Scanner` passed from the caller without closing `System.in` to maintain continuous input.  
+
 
 ---
 
