@@ -30,7 +30,20 @@ Config:
 
 ---
 
-[Donor.java](Donor.java)
+### [User.java](User.java)
+
+Base for all users (Donor/Recipient), enforcing a common interface.
+
+- **Fields**:
+  - `String name` — user’s name
+  - `String bloodType` — uppercase blood group
+
+- **Constructor**: Stores `name` and `bloodType.toUpperCase()`.
+- **Abstract** `showMenu(DatabaseManager db)`: Each subclass provides its own console menu.
+
+---
+
+### [Donor.java](Donor.java)
 
 Represents a blood donor with simple console interactions.
 
@@ -43,7 +56,7 @@ Represents a blood donor with simple console interactions.
 
 ---
 
-[Recipient.java](Recipient.java)
+### [Recipient.java](Recipient.java)
 
 Represents a blood recipient with console-based request functionality.
 
@@ -55,7 +68,7 @@ Represents a blood recipient with console-based request functionality.
 
 ---
 
-[Staff.java](Staff.java)
+### [Staff.java](Staff.java)
 
 Handles staff authentication and inventory management via a console menu.
 
