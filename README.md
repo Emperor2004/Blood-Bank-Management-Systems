@@ -30,7 +30,7 @@ The `bloodbank` database models a simple network of blood banks, donors, recipie
 
 ---
 
-### [DatabaseManager.java](DatabaseManager.java)
+### [Database Manager](DatabaseManager.java)
 
 Provides JDBC-based access to the `bloodbank` MySQL schema, with built-in validation and error handling.
 
