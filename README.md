@@ -1,6 +1,23 @@
-# Blood-Bank-Management-Systems
+# Blood Bank Management Systems
 
-## 🗃️File Descriptions
+***A simple Java console application to manage multiple blood banks’ inventory, donors, recipients, and staff workflows using a MySQL backend.***
+
+## 📂 Project Structure
+```
+.
+├── bloodbank.sql
+├── DatabaseManager.java
+├── User.java
+├── Donor.java
+├── Recipient.java
+├── Staff.java
+├── BloodBankApp.java
+├── InsufficientBloodStockException.java
+├── InvalidBloodTypeException.java
+└── InvalidStaffOperationException.java
+```
+
+## 🗃 File Descriptions
 
 ### [bloodbank.sql](bloodbank.sql)
 
@@ -15,25 +32,37 @@ The `bloodbank` database models a simple network of blood banks, donors, recipie
 
 ### [DatabaseManager.java](DatabaseManager.java)
 
-Manages MySQL interactions for the `bloodbank` schema, including stock queries and updates with validation.
+Provides JDBC-based access to the `bloodbank` MySQL schema, with built-in validation and error handling.
 
-- **Constructor**  
-  Initializes JDBC connection to `jdbc:mysql://localhost:3306/bloodbank` using user and password.
+- **Purpose**  
+  Manages database connection and implements methods to query and update blood inventory, plus staff authentication.
 
-- **isValidBloodType(type)**  
-  Private helper to check against `VALID_BLOOD_TYPES = {"A","B","AB","O"}`.
+- **Connection Setup**  
+  - Loads MySQL driver and connects to `jdbc:mysql://localhost:3306/bloodbank`  
+  - Input Credentials
+  - Logs success or prints connection errors
+
+- **Blood-Type Validation**  
+  Uses `VALID_BLOOD_TYPES = {"A","B","AB","O"}` to guard against invalid inputs.
 
 - **getBloodQuantity(bankID, bloodType)**  
-  - Throws `InvalidBloodTypeException` if type invalid.  
-  - Returns current stock (0 if no record).
+  - Throws `InvalidBloodTypeException` for unrecognized types  
+  - Throws `NullPointerException` if the connection is missing  
+  - Queries current stock, logs SQL errors, and returns quantity (0 if none)
 
 - **updateBloodQuantity(bankID, bloodType, newQty)**  
-  - Throws `InvalidBloodTypeException` if type invalid.  
-  - Throws `InvalidStaffOperationException` if `newQty < 0`.  
-  - Updates inventory and returns `true` on success.
+  - Validates blood type and non-negative quantity (throws exceptions otherwise)  
+  - Executes an update inside a try-with-resources block  
+  - Returns `true` if the update succeeds; logs and returns `false` on SQL errors
 
 - **validateStaff(staffID, password)**  
-  Calls `db.validateStaff` query and returns `true` if credentials match.
+  - Verifies credentials via a SELECT query in a try-with-resources block  
+  - Returns `true` on match; logs and returns `false` on SQL errors
+
+- **Error Handling & Resource Management**  
+  - Catches and logs `SQLException` or driver errors  
+  - Uses try-with-resources to ensure `PreparedStatement` and `ResultSet` are closed  
+  - Propagates custom exceptions for invalid operations  
 
 ---
 
@@ -52,107 +81,145 @@ Base for all users (Donor/Recipient), enforcing a common interface.
 
 ### [Donor.java](Donor.java)
 
-Provides a console‐based interface for donors to record blood donations.
+Provides a console‐based interface for donors to record blood donations with input validation and error handling.
 
 - **Purpose**  
-  Guides donors through the donation process and updates inventory.
+  Guides a donor through entering a valid donation quantity, updates inventory, and acknowledges the contribution.
+
+- **Fields**  
+  - `name`: Donor’s name  
+  - `bloodType`: Donor’s blood group
 
 - **Donation Workflow**  
-  - Prompts donor for quantity to donate  
+  - Prompts for donation quantity  
+  - Validates positive integer input (reports invalid entries)  
   - Retrieves current stock via `DatabaseManager.getBloodQuantity`  
-  - Updates total using `DatabaseManager.updateBloodQuantity`  
-  - Confirms success with new stock level and a thank‐you message  
-  - Reports errors if the update fails
+  - Updates stock with `DatabaseManager.updateBloodQuantity`  
+  - Confirms new total and thanks the donor  
+  - Handles:
+    - Non-numeric input (`InputMismatchException`)  
+    - Non-positive quantity (`IllegalArgumentException`)  
+    - Invalid blood type or update errors (`InvalidBloodTypeException`, `InvalidStaffOperationException`)
 
 - **Main Menu**  
-  1. **Donate Blood**  
-     - Calls the donation workflow  
-  2. **Exit**  
-     - Displays a farewell message and ends the loop  
-     - Invalid selections prompt a retry message
+  - **Donate Blood**: launches the donation workflow  
+  - **Exit**: thanks the donor and ends the loop  
+  - Invalid menu selections and input mismatches prompt retry messages
 
-- **Error Handling**  
-  Catches and displays messages for:  
-  - `InvalidBloodTypeException`  
-  - `InvalidStaffOperationException`
+- **Accessors**  
+  - `getName` / `setName`  
+  - `getBloodType` / `setBloodType`
 
 - **Input Management**  
-  Uses a shared `Scanner` passed from the caller without closing `System.in` to maintain continuous input.  
-
+  Uses a shared `Scanner` without closing `System.in` to support continuous input and recovery from invalid entries.  
 
 ---
 
 ### [Recipient.java](Recipient.java)
 
-Provides a console‐based interface for recipients to request blood units.
+Provides a console‐based interface for recipients to request blood with validation and error handling.
 
 - **Purpose**  
-  Guides recipients through checking availability and placing blood requests.
+  Guides a recipient through entering a valid request quantity, checks stock, updates inventory, and confirms readiness.
 
 - **Request Workflow**  
-  - Prompts recipient for quantity needed  
+  - Prompts for quantity to request  
+  - Validates positive integer input (reports non-numeric or non-positive entries)  
   - Retrieves current stock via `DatabaseManager.getBloodQuantity`  
   - Alerts if insufficient units available  
-  - Deducts requested units using `DatabaseManager.updateBloodQuantity`  
-  - Confirms success with remaining stock and readiness message  
-  - Reports errors if the update fails
+  - Deducts approved units using `DatabaseManager.updateBloodQuantity`  
+  - Confirms remaining stock and readiness message
 
 - **Main Menu**  
-  1. **Request Blood**  
-     - Initiates the request workflow  
-  2. **Exit**  
-     - Displays a farewell message and ends the loop  
-  - Invalid selections prompt a retry message
+  - **Request Blood**: launches the request workflow  
+  - **Exit**: thanks the recipient and exits the loop  
+  - Invalid menu selections and input mismatches prompt retry messages
 
 - **Error Handling**  
   Catches and displays messages for:  
-  - `InvalidBloodTypeException`  
-  - `InvalidStaffOperationException`
+  - `InputMismatchException` (non-numeric input)  
+  - `IllegalArgumentException` (non-positive quantity)  
+  - `InvalidBloodTypeException` & `InvalidStaffOperationException` (unexpected errors)
+
+- **Accessors**  
+  - `getName` / `setName`  
+  - `getBloodType` / `setBloodType`
 
 - **Input Management**  
-  Uses a shared `Scanner` passed from the caller without closing `System.in` to maintain continuous input.  
+  Uses a shared `Scanner` passed from the caller without closing `System.in` to allow continuous interaction and recovery from invalid input.  
 
 ---
 
 ### [Staff.java](Staff.java)
 
-
-Implements a text‐based menu for staff to authenticate and manage blood bank inventory.
+A console‐based interface for staff to authenticate and manage blood inventory with robust input validation.
 
 - **Purpose**  
-  Enables staff users to securely log in, check current blood stock levels, update inventory quantities, and log out.
+  Allows staff members to log in, view current stock levels, update inventory quantities, and continue until they choose to logout.
 
 - **Authentication**  
   - Uses `staffID` and `password`  
   - Verifies credentials via `DatabaseManager.validateStaff`
 
 - **Main Menu**  
-  1. **Check Inventory**  
+  1. **Check Blood Inventory**  
      - Prompts for blood type  
-     - Retrieves and displays available units  
-     - Handles invalid blood‐type errors  
-  2. **Update Inventory**  
+     - Retrieves and displays available units, handling invalid‐type errors  
+  2. **Update Blood Inventory**  
      - Prompts for blood type and new quantity  
-     - Updates database stock  
-     - Prevents negative quantities and reports errors  
+     - Updates stock, handling invalid‐type and negative‐quantity errors  
   3. **Logout**  
-     - Exits the menu loop
+     - Ends the menu loop  
 
 - **Error Handling**  
-  Catches and displays messages for:
-  - `InvalidBloodTypeException`  
-  - `InvalidStaffOperationException`
+  - Catches `InputMismatchException` for non‐numeric menu or quantity entries  
+  - Displays messages for `InvalidBloodTypeException` and `InvalidStaffOperationException`
+
+- **Accessors**  
+  - `getStaffID` / `setStaffID`  
+  - `getPassword` / `setPassword`
 
 - **Input Management**  
-  Uses a single `Scanner` instance without closing `System.in` to support continuous user interaction.  
+  Uses a dedicated `Scanner` instance without closing `System.in` to allow continuous input and recovery from invalid entries.  
 
+---
 
+### [BloodBankApp.java](BloodBankApp.java)
 
+Entry point for the console‐based Blood Bank Management System, coordinating donor/recipient and staff workflows.
 
+- **Purpose**  
+  Presents the main menu and routes users to donor/recipient or staff interfaces, handling overall application flow.
 
+- **Main Menu**  
+  1. **Donor/Recipient**  
+     - Prompts for name and blood type  
+     - Lets user choose role (Donor or Recipient)  
+     - Instantiates the appropriate class and invokes its menu  
+  2. **Staff Login**  
+     - Prompts for staff ID and password  
+     - Authenticates via `Staff.login`  
+     - On success, enters the staff menu  
+     - On failure, reports invalid credentials  
+  3. **Exit**  
+     - Gracefully terminates the application
 
+- **User Flow**  
+  - Continually loops until “Exit” is selected  
+  - Delegates to `Donor`, `Recipient`, or `Staff` classes for role‐specific operations  
 
+- **Error Handling**  
+  - Catches non‐numeric menu entries (`NumberFormatException`)  
+  - Handles unexpected input end (`NoSuchElementException`)  
+  - Reports any other exceptions with their messages  
 
+- **Input Management**  
+  - Uses a single `Scanner` and trims empty lines  
+  - Validates and parses string input to integers safely  
+  - Closes the `Scanner` on application exit  
+
+- **Integration**  
+  Relies on `DatabaseManager` for persistence and the `Donor`, `Recipient`, and `Staff` classes for domain logic.  
 
 ---
 
@@ -182,3 +249,11 @@ A custom checked exception thrown when a staff-triggered operation is not permit
 
 - **Extends**: `Exception`
 - **Constructor**: Accepts a `String message` detailing the invalid operation.
+
+---
+
+## 🟠 Contributors
+- Nimit Prakash
+- Om Narayan Pandit
+- Vedant Shitole
+- Vraj Patel
