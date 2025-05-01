@@ -3,6 +3,7 @@ import java.sql.*;
 
 public class DatabaseManager {
     private Connection conn;
+
     public static final String[] VALID_BLOOD_TYPES = {"A", "B", "AB", "O"};
 
     public DatabaseManager() {
@@ -17,6 +18,18 @@ public class DatabaseManager {
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Database connection error: " + e.getMessage());
         }
+      
+    private final int defaultBankID = 1;
+    public static final String[] VALID_BLOOD_TYPES = {"A", "B", "AB", "O"};
+
+    public DatabaseManager() throws Exception {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/bloodbank",
+            "root",
+            "vraj@3582"
+        );
+        System.out.println("Connected to the database successfully.");
     }
 
     private boolean isValidBloodType(String bloodType) {
@@ -43,11 +56,27 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.out.println("Error fetching inventory: " + e.getMessage());
         }
+
+    public int getBloodQuantity(int bankID, String bloodType) throws InvalidBloodTypeException , Exception{
+        if (!isValidBloodType(bloodType)) {
+            throw new InvalidBloodTypeException("Invalid blood type: " + bloodType);
+        }
+        int qty = 0;
+        PreparedStatement ps = conn.prepareStatement(
+            "SELECT quantity FROM BloodInventory WHERE bloodBankID = ? AND bloodType = ?");
+        ps.setInt(1, bankID);
+        ps.setString(2, bloodType.toUpperCase());
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) qty = rs.getInt("quantity");
+
         return qty;
     }
 
     public boolean updateBloodQuantity(int bankID, String bloodType, int newQty)
+
             throws InvalidBloodTypeException, InvalidStaffOperationException {
+
+            throws InvalidBloodTypeException, InvalidStaffOperationException, Exception {
 
         if (!isValidBloodType(bloodType)) {
             throw new InvalidBloodTypeException("Invalid blood type: " + bloodType);
@@ -80,5 +109,23 @@ public class DatabaseManager {
             System.out.println("Staff validation error: " + e.getMessage());
             return false;
         }
+
+        PreparedStatement ps = conn.prepareStatement(
+            "UPDATE BloodInventory SET quantity = ? WHERE bloodBankID = ? AND bloodType = ?");
+        ps.setInt(1, newQty);
+        ps.setInt(2, bankID);
+        ps.setString(3, bloodType.toUpperCase());
+        return ps.executeUpdate() > 0;
+
+    }
+
+    public boolean validateStaff(String staffID, String password) throws Exception {
+        PreparedStatement ps = conn.prepareStatement(
+            "SELECT 1 FROM Staff WHERE staffID = ? AND password = ?");
+        ps.setString(1, staffID);
+        ps.setString(2, password);
+        ResultSet rs = ps.executeQuery();
+        return rs.next();
+
     }
 }
