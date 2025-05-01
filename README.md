@@ -66,7 +66,7 @@ Provides JDBC-based access to the `bloodbank` MySQL schema, with built-in valida
 
 ---
 
-### [User.java](User.java)
+### [User Abstract Class](User.java)
 
 Base for all users (Donor/Recipient), enforcing a common interface.
 
