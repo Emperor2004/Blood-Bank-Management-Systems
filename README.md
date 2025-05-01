@@ -135,36 +135,35 @@ Provides a console‐based interface for recipients to request blood with valida
 
 ### [Staff.java](Staff.java)
 
-
-Implements a text‐based menu for staff to authenticate and manage blood bank inventory.
+A console‐based interface for staff to authenticate and manage blood inventory with robust input validation.
 
 - **Purpose**  
-  Enables staff users to securely log in, check current blood stock levels, update inventory quantities, and log out.
+  Allows staff members to log in, view current stock levels, update inventory quantities, and continue until they choose to logout.
 
 - **Authentication**  
   - Uses `staffID` and `password`  
   - Verifies credentials via `DatabaseManager.validateStaff`
 
 - **Main Menu**  
-  1. **Check Inventory**  
+  1. **Check Blood Inventory**  
      - Prompts for blood type  
-     - Retrieves and displays available units  
-     - Handles invalid blood‐type errors  
-  2. **Update Inventory**  
+     - Retrieves and displays available units, handling invalid‐type errors  
+  2. **Update Blood Inventory**  
      - Prompts for blood type and new quantity  
-     - Updates database stock  
-     - Prevents negative quantities and reports errors  
+     - Updates stock, handling invalid‐type and negative‐quantity errors  
   3. **Logout**  
-     - Exits the menu loop
+     - Ends the menu loop  
 
 - **Error Handling**  
-  Catches and displays messages for:
-  - `InvalidBloodTypeException`  
-  - `InvalidStaffOperationException`
+  - Catches `InputMismatchException` for non‐numeric menu or quantity entries  
+  - Displays messages for `InvalidBloodTypeException` and `InvalidStaffOperationException`
+
+- **Accessors**  
+  - `getStaffID` / `setStaffID`  
+  - `getPassword` / `setPassword`
 
 - **Input Management**  
-  Uses a single `Scanner` instance without closing `System.in` to support continuous user interaction.  
-
+  Uses a dedicated `Scanner` instance without closing `System.in` to allow continuous input and recovery from invalid entries.  
 
 ---
 
